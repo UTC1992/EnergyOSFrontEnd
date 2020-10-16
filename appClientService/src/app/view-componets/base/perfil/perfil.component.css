@@ -1,0 +1,10 @@
+.input-formulario {
+    display: flexbox;
+    flex-direction: column;
+  }
+  
+  .input-formulario > * {
+    margin-top: 10px;
+    margin-right: 5px;
+    width: 50%;
+  }

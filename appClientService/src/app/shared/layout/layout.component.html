@@ -1,0 +1,62 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport="true"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="!(isHandset$ | async)">
+    <mat-toolbar color="secondary">
+        <span>Energy OS</span>
+        <!--<img mat-card-sm-image class="logo" src="../../../assets/img/logoEnergyOS.png">-->
+    </mat-toolbar>
+    <mat-nav-list>
+      <a mat-menu-item >Menú</a>
+      <mat-divider></mat-divider>
+      <a mat-menu-item *ngFor="let modulo of modulos" (click)="cambiodeModulo(modulo.ruta)"
+       [routerLink]="[modulo.ruta]" routerLinkActive="active" >
+        <mat-icon aria-label="Side nav toggle icon">{{modulo.icono_menu}}</mat-icon>{{modulo.nombre}}
+      </a>
+    </mat-nav-list>
+    
+    <!--
+    <mat-nav-list>
+      <mat-divider></mat-divider>
+      <a [routerLink]="['/base/inicio']" routerLinkActive="active" >Gestión de Cortes</a>
+      <a mat-button [routerLink]="['/base/tecnicos']" routerLinkActive="mat-accent">Técnicos</a>
+    </mat-nav-list>
+    -->
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" >
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span style="font-size: 12pt;">{{ tituloModulo }}</span>
+      <span class="example-fill-remaining-space"></span>
+        <mat-menu #appMenu="matMenu">
+          <button mat-menu-item [routerLink]="['/base/perfil']">
+            <mat-icon>account_circle</mat-icon>
+            Cuenta</button>
+          <button mat-menu-item (click)="logout()">
+              <mat-icon>power_settings_new</mat-icon>
+            Salir</button>
+        </mat-menu>
+        <span style="font-size: 12pt;">{{ usuario }}</span>
+        <button mat-icon-button [matMenuTriggerFor]="appMenu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        
+    </mat-toolbar>
+    <section>
+      <!-- Add Content Here -->
+      <router-outlet></router-outlet> 
+      <!-- Add Content Here -->
+    </section>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

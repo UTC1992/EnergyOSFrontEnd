@@ -1,0 +1,143 @@
+<br>  
+<div class="card">
+  <!--Form insert tecnico-->
+  <div class="card-body">
+    <div class="d-flex justify-content-center">
+        <h5 class="">Técnicos de cortes</h5>
+    </div>
+    <mat-grid-list cols="2" rowHeight="1:0.2">
+        <mat-grid-tile>
+          <button mat-button class="btn btn-primary btn-sm" (click)="openModalCreate(template)">
+            <mat-icon>person_add</mat-icon>
+            Crear técnico
+          </button>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <mat-form-field class="col-lg-6 col-md-6 col-sm-6">
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" class="table table-sm table-striped " >
+  
+          <!-- Id Column -->
+          <ng-container matColumnDef="id_tecn">
+            <th mat-header-cell *matHeaderCellDef> N° </th>
+            <td mat-cell *matCellDef="let i=index"> {{i+1}} </td>
+          </ng-container>
+          <!-- Nombres Column -->
+          <ng-container matColumnDef="nombres">
+            <th mat-header-cell *matHeaderCellDef> Nombres </th>
+            <td mat-cell *matCellDef="let tecnico"> 
+              <div style="width: 200px;">
+                  {{tecnico.nombres}} {{tecnico.apellidos}} 
+              </div>
+            </td>
+          </ng-container>
+          <!-- Apellidos Column -->
+          <ng-container matColumnDef="cedula">
+            <th mat-header-cell *matHeaderCellDef> Cédula </th>
+            <td mat-cell *matCellDef="let tecnico"> {{tecnico.cedula}} </td>
+          </ng-container>
+          <!-- Telefono Column -->
+          <ng-container matColumnDef="telefono">
+            <th mat-header-cell *matHeaderCellDef> Teléfono </th>
+            <td mat-cell *matCellDef="let tecnico"> {{tecnico.telefono}} </td>
+          </ng-container>
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef> Correo </th>
+            <td mat-cell *matCellDef="let tecnico"> {{tecnico.email}} </td>
+          </ng-container>
+          <!-- Estado Column -->
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef> Estado </th>
+            <td mat-cell *matCellDef="let tecnico"> {{tecnico.estado}} </td>
+          </ng-container>
+          <!--Actividad Column-->
+          <ng-container matColumnDef="actividad">
+              <th mat-header-cell *matHeaderCellDef> Actividad </th>
+              <td mat-cell *matCellDef="let tecnico"> {{tecnico.actividad}} </td>
+            </ng-container>
+
+          <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef> Acciones </th>
+              <td mat-cell *matCellDef="let tecnico">
+                <div style="width: 220px;">
+                  <button mat-button class="btn btn-info btn-sm" 
+                  (click)="openModalEdit(tecnico.id_tecn, template)"
+                  style="margin-right: 5px;">
+                  <mat-icon>edit</mat-icon>
+                    Editar
+                  </button>
+                  <button mat-button class="btn btn-danger btn-sm" 
+                  (click)="confirmarEliminar(tecnico.id_tecn)">
+                  <mat-icon>delete</mat-icon>
+                  Eliminar
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+  <!--end  forms tecnico-->
+</div>
+
+<ng-template #template>
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLongTitle">{{ tituloModal }}</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <!--formulario de edición-->
+  <form [formGroup]="formData" (ngSubmit)="enviarDatos()">
+  <div class="modal-body">
+    <div class="form-horizontal">
+        <div class="input-formulario">
+            <mat-form-field>
+                <input type="text" matInput placeholder="Nombres" formControlName="nombres" autocomplete="off">
+                <mat-error *ngIf="formData.get('nombres').hasError('required')">Requerido</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input type="text" matInput placeholder="Apellidos" formControlName="apellidos" autocomplete="off">
+                <mat-error *ngIf="formData.get('apellidos').hasError('required')">Requerido</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input type="text" matInput placeholder="Cédula" formControlName="cedula" autocomplete="off">
+                <mat-error *ngIf="formData.get('cedula').hasError('required')">Requerido</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input type="text" matInput placeholder="Teléfono" formControlName="telefono" autocomplete="off">
+                <mat-error *ngIf="formData.get('telefono').hasError('required')">Requerido</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input type="text" matInput placeholder="Email" formControlName="email" autocomplete="off">
+                <mat-error *ngIf="formData.get('email').hasError('required')">Requerido</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <input type="text" matInput placeholder="Actividad" formControlName="actividad" readonly autocomplete="off">
+            </mat-form-field>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+  <button mat-button type="button" class="btn btn-danger"
+   (click)="modalRef.hide()">
+   <mat-icon>cancel</mat-icon>
+   Cerrar</button>
+  <button mat-button type="submit" [disabled]="formData.invalid || loading" class="btn btn-primary">
+    <mat-icon>save</mat-icon>
+    Guardar 
+  </button>
+  </div>
+</form>
+<!--fin formulario-->
+</ng-template>

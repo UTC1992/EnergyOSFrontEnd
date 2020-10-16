@@ -1,0 +1,9 @@
+.input-formulario {
+    display: flexbox;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+  
+  .input-formulario > * {
+    width: 100%;
+  }

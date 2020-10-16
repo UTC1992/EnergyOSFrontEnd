@@ -1,0 +1,60 @@
+<div class="container"  >
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-4 mx-auto">
+        
+        <div class="text-center" style="margin-top: 100px;">
+          <p class="h2 mb-3" style="color: white;">Energy OS 
+            <span><img class="img-responsive" src="../../../assets/img/logoEnergyOS.png" alt="" width="50" height="50"></span>
+          </p>
+        </div>
+        <mat-card>
+            <div class="my-4">
+                <div class="h3 text-center">
+                  <p class="font-weight-normal">Ingreso</p>
+                </div>
+                <form [formGroup]="loginForm" (ngSubmit)="login()">
+                  <div class="input-formulario">
+                    <mat-form-field>
+                      <input type="text" placeholder="Email" matInput formControlName="username"  autocomplete="off">
+                      <mat-error *ngIf="loginForm.get('username').hasError('required')">Requerido</mat-error>
+                      <mat-error *ngIf="loginForm.get('username').hasError('email')">El email es incorrecto</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="input-formulario">
+                    <mat-form-field>
+                      <input type="password" placeholder="Contraseña" matInput formControlName="password" autocomplete="off">
+                      <mat-error *ngIf="loginForm.get('password').hasError('required')">Requerido</mat-error>
+                    </mat-form-field>
+                  </div>
+                
+                  <!--
+                  <div class="checkbox mb-3">
+                    <input type="checkbox" class="custom-control-input" id="customCheck1">
+                  </div>
+                  -->
+
+                  <button mat-button class="btn btn-lg btn-primary btn-block text-uppercase btn-sm"
+                   type="submit">
+                  Ingresar
+                  <mat-icon>trending_flat</mat-icon>
+                  </button>
+  
+                </form>
+            </div>
+        </mat-card>
+        
+      </div>
+    </div>
+</div>
+<!-- Footer -->
+<footer class="page-footer font-small blue" style="color: white; font-weight: bold;">
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">© 2019 Copyright
+      <a href="#"> By TS-Platform.</a> Todos los derechos reservados.
+    </div>
+    <!-- Copyright -->
+
+  </footer>
+  <!-- Footer -->
+

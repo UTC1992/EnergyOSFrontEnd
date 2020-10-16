@@ -1,0 +1,135 @@
+<div *ngIf="view_data_empty" class="alert alert-danger alert-dismissible fade show" role="alert" style="text-align: center;">
+  No hay datos para mostrar
+</div>
+<mat-grid-list cols="2" rowHeight="1:0.2">
+    <mat-grid-tile>
+      Puede realizar una busqueda:
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <mat-form-field class="col-lg-6 col-md-6 col-sm-6">
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+        </mat-form-field>
+    </mat-grid-tile>
+</mat-grid-list>
+<div class="table-responsive">
+    <table mat-table [dataSource]="dataSource2" class="table table-sm table-striped ">
+        <!-- Id Column -->
+        <ng-container matColumnDef="index">
+          <th mat-header-cell *matHeaderCellDef> N° </th>
+          <td mat-cell *matCellDef="let i=index"> {{i+1}} </td>
+        </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="tecnico">
+            <th mat-header-cell *matHeaderCellDef> Técnico </th>
+            <td mat-cell *matCellDef="let tarea"> 
+              <div style="width: 150px;">
+                  {{tarea.nombres}} {{tarea.apellidos}} 
+              </div>
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="actividad">
+          <th mat-header-cell *matHeaderCellDef> Actividad </th>
+          <td mat-cell *matCellDef="let tarea"> 
+              {{tarea.n9cono}} 
+          </td>
+        </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="cuenta">
+            <th mat-header-cell *matHeaderCellDef> Cuenta </th>
+            <td mat-cell *matCellDef="let tarea"> 
+                {{tarea.n9cocu}} 
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="canton">
+            <th mat-header-cell *matHeaderCellDef> Cantón </th>
+            <td mat-cell *matCellDef="let tarea"> 
+                {{tarea.n9coag}} 
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="sector">
+            <th mat-header-cell *matHeaderCellDef> Sector </th>
+            <td mat-cell *matCellDef="let tarea"> 
+                {{tarea.n9cose}} 
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="medidor">
+            <th mat-header-cell *matHeaderCellDef> Medidor </th>
+            <td mat-cell *matCellDef="let tarea"> 
+                {{tarea.n9meco}} 
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="lectura">
+            <th mat-header-cell *matHeaderCellDef> Lectura </th>
+            <td mat-cell *matCellDef="let tarea"> 
+                {{tarea.n9leco}} 
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="usuario">
+            <th mat-header-cell *matHeaderCellDef> Usuario </th>
+            <td mat-cell *matCellDef="let tarea">
+              <div style="width: 200px;">
+                  {{tarea.n9nomb}}
+              </div> 
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="latitud">
+            <th mat-header-cell *matHeaderCellDef> Latitud </th>
+            <td mat-cell *matCellDef="let tarea"> 
+                {{tarea.cucoon}} 
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="longitud">
+            <th mat-header-cell *matHeaderCellDef> Longitud </th>
+            <td mat-cell *matCellDef="let tarea"> 
+                {{tarea.cucooe}} 
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="hora">
+            <th mat-header-cell *matHeaderCellDef> Hora </th>
+            <td mat-cell *matCellDef="let tarea"> 
+                {{tarea.hora}} 
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="novedad">
+            <th mat-header-cell *matHeaderCellDef> Observación </th>
+            <td mat-cell *matCellDef="let tarea">
+              <div style="width: 150px;">
+                  {{tarea.observacionFin}}
+              </div>
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="estadoAct">
+            <th mat-header-cell *matHeaderCellDef> Estado </th>
+            <td mat-cell *matCellDef="let tarea"> 
+                <span *ngIf="tarea.referencia==0" class="text-danger">SIN ASIGNAR</span>
+                <span *ngIf="tarea.estado==1" class="text-info">ASIGNADO</span>
+                <span *ngIf="tarea.estado==2 && tarea.n9cono=='010'" class="text-success">REALIZADO</span>
+                <span *ngIf="tarea.estado==2 && tarea.observacionFin=='Sin novedad' && (tarea.n9cono=='030' || tarea.n9cono=='040' || tarea.n9cono=='050')" class="text-success">REALIZADO</span>
+                <span *ngIf="tarea.estado==2 && tarea.observacionFin!='Sin novedad' && (tarea.n9cono=='030' || tarea.n9cono=='040' || tarea.n9cono=='050')" class="text-warning">NO REALIZADO</span>
+                <span *ngIf="tarea.estado==3" class="text-warning">NO REALIZADO</span>
+            </td>
+          </ng-container>
+        <!-- Nombres Column -->
+        <ng-container matColumnDef="estadoFinal">
+            <th mat-header-cell *matHeaderCellDef> Estado </th>
+            <td mat-cell *matCellDef="let tarea"> 
+                {{tarea.referencia}} 
+            </td>
+          </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>
+

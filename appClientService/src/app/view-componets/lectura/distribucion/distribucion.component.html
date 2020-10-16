@@ -1,0 +1,206 @@
+<br>
+<div class="card card-body" style="margin-bottom: 10px;">
+    <div class="d-flex justify-content-center">
+        <h5 class="">Distribuir rutas</h5>
+    </div>
+    <div class="d-flex justify-content-center" style="margin-bottom: 10px;">
+        <button class="btn btn-primary btn-sm" (click)="actualizarDistribucionesTablaTemporal()">
+            Actualizar distribución</button>
+    </div>
+  <mat-card-content>
+      <mat-accordion>
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                  Expandir para asignar
+              </mat-expansion-panel-header>
+              <div class="row">  
+                <div class="col col-3" >
+                  <div class="input-formulario">
+                      <mat-form-field>
+                          <mat-select matNativeControl placeholder="Agencia" 
+                          name="agencia" id="agencia"
+                          (selectionChange)="getSectores($event)" [(ngModel)]="agenciaElegida"> 
+                            <mat-option value="empty"></mat-option>
+                            <mat-option *ngFor="let value of primerFiltro" value="{{value.agencia}}" >
+                              {{value.agencia}}</mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                  </div>
+                </div>
+                <div class="col col-3" >
+                    <div class="input-formulario form-group" *ngIf="mostrarFiltro2">
+                        <mat-form-field>
+                            <mat-select matNativeControl placeholder="Sector" 
+                            name="sector" id="sector"
+                            (selectionChange)="getRutas($event)"> 
+                              <mat-option value="empty"></mat-option>
+                              <mat-option *ngFor="let value of segundoFiltro" value="{{value.sector}}" >
+                                {{value.sector}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="col col-3" >
+                    <div class="input-formulario form-group" *ngIf="mostrarFiltro3">
+                        <mat-form-field>
+                            <mat-select [formControl]="formRutas"  placeholder="Ruta" multiple>
+                              <mat-option (click)="getCantidad(value.ruta)"
+                               *ngFor="let value of tercerFiltro" [value]="value.ruta" >
+                                {{value.ruta}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="col col-3">
+                  <div class="input-formulario form-group" *ngIf="mostrarCantidad" >
+                    <mat-form-field>
+                      <input matInput type="number" placeholder="Cantidad" 
+                      name ="cantidad_lecturas" value="{{cantidad_lecturas}}">
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="text-center col col-lg-12">
+                      <button class="btn btn-success btn-sm" 
+                      (click)="asignarRutaTecnico()"
+                      mat-raised-button
+                      matTooltip="Precione para asignar actividades" >
+                      <mat-icon>check</mat-icon>    
+                      Asignar rutas
+                      </button>  
+                  </div>
+              </div>
+          </mat-expansion-panel>
+      </mat-accordion>
+  </mat-card-content>
+</div>
+<div class="card card-body" style="margin-bottom: 10px;">
+    <div class="row">
+        <div class="col d-flex justify-content-center">
+            <h5 class="">Lectores disponibles</h5>    
+        </div>
+    </div>
+    <mat-card-content>
+        <mat-accordion>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                Los técnicos restantes son: {{ tecnicosLecturas.length }}
+                Oprima para mostralos
+                </mat-expansion-panel-header>
+                <div class="table-responsive">
+                    <cdk-virtual-scroll-viewport itemSize="100" class="example-viewport"> 
+                      <mat-selection-list class="col-lg-12 col-md-12 col-sm-12" #tecnico 
+                      (selectionChange)="onSelection($event, tecnico.selectedOptions.selected)">
+                          <div style="width: 600px;">
+                              <mat-list-option *ngFor="let tecnico of tecnicosLecturas" [value]="tecnico.id_tecn">
+                                      {{ tecnico.apellidos}} {{ tecnico.nombres}}
+                              </mat-list-option>
+                          </div>
+                      </mat-selection-list>
+                    </cdk-virtual-scroll-viewport>   
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </mat-card-content>
+</div>
+
+<div class="card">
+  <div class="card-body">
+      <div class="d-flex justify-content-center">
+          <h5 class="">Detalle de asignaciones</h5> 
+      </div>
+      <div class="table-responsive">
+          <mat-grid-list cols="2" rowHeight="1:0.2">
+              <mat-grid-tile>
+                  Información de los lectores y sus rutas:
+                  <button style="margin-left: 20px;" class="btn btn-primary btn-sm" (click)="actualizarVista()">
+                      Actualizar detalles</button>
+              </mat-grid-tile>
+              <mat-grid-tile>
+                  <mat-form-field class="col-lg-6 col-md-6 col-sm-6">
+                      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+                  </mat-form-field>
+              </mat-grid-tile>
+          </mat-grid-list>
+          <table mat-table [dataSource]="dataSource" multiTemplateDataRows
+           class="table table-sm table-striped">
+              
+              <!-- Id Column -->
+              <ng-container matColumnDef="index">
+                  <th mat-header-cell *matHeaderCellDef> N° </th>
+                  <td mat-cell *matCellDef="let distribucion" class="datos-td"> {{distribucion.index}} </td>
+              </ng-container>
+              <!-- Nombres Column -->
+              <ng-container matColumnDef="tecnico">
+                  <th mat-header-cell *matHeaderCellDef> Técnico </th>
+                  <td mat-cell *matCellDef="let distribucion" class="datos-td"> 
+                      <div style="width: 300px;">
+                          {{distribucion.tecnico}}
+                      </div>
+                  </td>
+              </ng-container>
+              <!-- Nombres Column -->
+              <ng-container matColumnDef="accion">
+                  <th mat-header-cell *matHeaderCellDef> Acción </th>
+                  <td mat-cell *matCellDef="let distribucion" style="padding: 5px;">
+                      <button mat-button class="btn btn-warning btn-sm" 
+                        (click)="reasignarRutaTecnico(distribucion.id_tecn)" 
+                        style="margin-right: 5px;">
+                        <mat-icon>replay</mat-icon>
+                        Re-Asignar
+                      </button>
+                  </td>
+              </ng-container>
+              <!--datos expandir-->
+              <ng-container matColumnDef="expandedDetail">
+                  <td mat-cell *matCellDef="let distribucion" [attr.colspan]="displayedColumns.length">
+                      <div class="example-element-detail"
+                          [@detailExpand]="distribucion == expandedElement ? 'expanded' : 'collapsed'">
+                          <div class="example-element-description justify-content-center">
+                              <div class="table-responsive">
+                                  <table class="table table-sm table-bordered">
+                                      <tr>
+                                          <td>Agencia</td>
+                                          <td>Sector</td>
+                                          <td>Ruta</td>
+                                          <td>Cantidad</td>
+                                          <td>Acciones</td>
+                                      </tr>
+                                      <tr *ngFor="let item of distribucion.data">
+                                          <td>{{item.datos.agencia}}</td>
+                                          <td>{{item.datos.sector}}</td>
+                                          <td>{{item.datos.ruta}}</td>
+                                          <td>{{item.datos.cantidad}}</td>
+                                          <td>
+                                              <div style="width: 350px;">
+                                                  
+                                                  <button mat-button class="btn btn-danger btn-sm" 
+                                                  (click)="confirmarEliminar(item.datos.id_tecn, item.datos.agencia, item.datos.sector, 
+                                                  item.datos.ruta)">
+                                                  <mat-icon>delete</mat-icon>
+                                                          Eliminar
+                                                  </button>  
+                                              </div>
+                                          </td>
+                                      </tr>
+                                  </table>
+                              </div>
+                          </div>
+                      </div>
+                  </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let distribucion; columns: displayedColumns;"
+              class="example-element-row"
+              [class.example-expanded-row]="expandedElement === distribucion"
+              (click)="expandedElement = expandedElement === distribucion ? null : distribucion">
+              </tr>
+              <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+  </div>
+</div>

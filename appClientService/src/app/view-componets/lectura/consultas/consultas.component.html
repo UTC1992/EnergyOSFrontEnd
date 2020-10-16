@@ -1,0 +1,499 @@
+<br>
+<div class="card card-body" style="margin-bottom: 10px;">
+  <div class="d-flex justify-content-center">
+      <h5 class="">Consultar progreso</h5>
+  </div>
+  <mat-card-content>
+      <mat-accordion>
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                  Expandir para consultar
+              </mat-expansion-panel-header>
+              <div class="row">
+                <div class="col col-3">
+                    <div class="input-formulario">
+                      <mat-form-field>
+                        <mat-select matNativeControl placeholder="Mes" 
+                            name="mes" id="mes"  [(ngModel)]="mesBuscar"> 
+                            <mat-option value="0">Mes</mat-option>
+                            <mat-option *ngFor="let mes of mesesList" value="{{mes.numero}}">{{mes.mes}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <div class="input-formulario">
+                        <mat-form-field>
+                            <mat-select matNativeControl placeholder="Técnico" 
+                            name="tecnico" id="tecnico"  [(ngModel)]="lectorBuscar"> 
+                                <mat-option value="empty">Técnico</mat-option>
+                                <mat-option *ngFor="let tecnico of tecnicosLecturas" value="{{tecnico.id_tecn}}">{{tecnico.apellidos}} {{tecnico.nombres}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <div class="input-formulario">
+                        <mat-form-field>
+                            <mat-select matNativeControl placeholder="Agencia" 
+                            name="actividad" id="actividad" [(ngModel)]="agenciaBuscar"> 
+                                <mat-option value="empty">Agencia</mat-option>
+                                <mat-option value="01">Latacunga</mat-option>
+                                <mat-option value="02">Salcedo</mat-option>
+                                <mat-option value="03">Pujilí</mat-option>
+                                <mat-option value="04">Saquisilí</mat-option>
+                                <mat-option value="05">Sigchos</mat-option>
+                                <mat-option value="06">La Mana</mat-option>
+                                <mat-option value="07">Pangua</mat-option>
+                                <mat-option value="95">CENEL</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <div class="input-formulario">
+                        <mat-form-field>
+                            <mat-select matNativeControl placeholder="Estado" 
+                            name="estado" id="estado" [(ngModel)]="estadoBuscar"> 
+                                <mat-option value="empty">Estado</mat-option>
+                                <mat-option value="0" >Nuevo</mat-option>
+                                <mat-option value="1" >Terminado</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                <button mat-button class="btn btn-primary btn-sm" 
+                style="margin-right: 10px;" (click)="verProgresoLecturas()">
+                <mat-icon>remove_red_eye</mat-icon>
+                Ver Actividades</button>
+                <!--
+                <button mat-button class="btn btn-sm btn-success" 
+                (click)="exportarExcelActividades()" style="margin-right: 10px;" >
+                <mat-icon>cloud_download</mat-icon>
+                Exportar a Excel</button>-->
+              </div>
+              <br>
+              <div *ngIf="sin_datos_progreso" class="alert alert-danger alert-dismissible fade show" role="alert" style="text-align: center;">
+                No hay datos para mostrar
+              </div>
+              <mat-grid-list cols="2" rowHeight="1:0.2">
+                  <mat-grid-tile>
+                    Puede realizar una busqueda:
+                  </mat-grid-tile>
+                  <mat-grid-tile>
+                      <mat-form-field class="col-lg-6 col-md-6 col-sm-6">
+                          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+                      </mat-form-field>
+                  </mat-grid-tile>
+              </mat-grid-list>
+              <div class="table-responsive">
+                  <table mat-table [dataSource]="dataSource" class="table table-sm table-striped ">
+                      <!-- Id Column -->
+                      <ng-container matColumnDef="index">
+                        <th mat-header-cell *matHeaderCellDef> N° </th>
+                        <td mat-cell *matCellDef="let i=index"> {{i+1}} </td>
+                      </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="tecnico">
+                          <th mat-header-cell *matHeaderCellDef> Técnico </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                            <div style="width: 150px;">
+                                <!--{{tarea.nombres}} {{tarea.apellidos}}--> 
+                            </div>
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="agencia">
+                        <th mat-header-cell *matHeaderCellDef> Agencia </th>
+                        <td mat-cell *matCellDef="let tarea"> 
+                            {{tarea.agencia}} 
+                        </td>
+                      </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="sector">
+                          <th mat-header-cell *matHeaderCellDef> Sector </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.sector}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="ruta">
+                          <th mat-header-cell *matHeaderCellDef> Ruta </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.ruta}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="cuenta">
+                          <th mat-header-cell *matHeaderCellDef> Cuenta </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.cuenta}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="medidor">
+                          <th mat-header-cell *matHeaderCellDef> Medidor </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.medidor}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="lec_anterior">
+                          <th mat-header-cell *matHeaderCellDef> Lectura anterior</th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.lectura}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="lec_actual">
+                          <th mat-header-cell *matHeaderCellDef> Lectura actual </th>
+                          <td mat-cell *matCellDef="let tarea">
+                            {{tarea.nueva_lectura}}
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="consumo_anterior">
+                        <th mat-header-cell *matHeaderCellDef> Consumo anterior </th>
+                        <td mat-cell *matCellDef="let tarea">
+                          {{tarea.consumo_anterior}}
+                        </td>
+                      </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="consumo_nuevo">
+                        <th mat-header-cell *matHeaderCellDef> Consumo nuevo </th>
+                        <td mat-cell *matCellDef="let tarea">
+                          {{tarea.nuevo_consumo}}
+                        </td>
+                      </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="usuario">
+                          <th mat-header-cell *matHeaderCellDef> Usuario </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                            <div style="width: 200px;">
+                              {{tarea.nombre}}
+                            </div> 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="latitud">
+                        <th mat-header-cell *matHeaderCellDef> Latitud </th>
+                        <td mat-cell *matCellDef="let tarea"> 
+                            {{tarea.latitud}} 
+                        </td>
+                      </ng-container>
+                        <!-- Nombres Column -->
+                      <ng-container matColumnDef="longitud">
+                          <th mat-header-cell *matHeaderCellDef> Longitud </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.longitud}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="hora">
+                          <th mat-header-cell *matHeaderCellDef> Hora </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.hora}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="observacion">
+                          <th mat-header-cell *matHeaderCellDef> Observación </th>
+                          <td mat-cell *matCellDef="let tarea">
+                            <div style="width: 150px;">
+                                {{tarea.observacion}}
+                            </div>
+                          </td>
+                        </ng-container>
+                        <!-- Nombres Column -->
+                      <ng-container matColumnDef="fechalec">
+                        <th mat-header-cell *matHeaderCellDef> Fecha de Lectura </th>
+                        <td mat-cell *matCellDef="let tarea">
+                          <div style="width: 150px;">
+                              {{tarea.fecha_lectura}}
+                          </div>
+                        </td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                  </table>
+                  <mat-paginator #paginator1 [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+              </div>
+          </mat-expansion-panel>
+      </mat-accordion>
+  </mat-card-content>
+</div>
+
+<div class="card card-body" style="margin-bottom: 10px;">
+  <div class="d-flex justify-content-center">
+      <h5 class="">Consultar envios</h5>
+  </div>
+  <mat-card-content>
+      <mat-accordion>
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                  Expandir para consultar envios
+              </mat-expansion-panel-header>
+              <div class="row">
+                <div class="col col-lg-2">
+                    <div class="input-formulario">
+                      <mat-form-field>
+                        <mat-select matNativeControl placeholder="Mes" 
+                            name="mes" id="mes"  [(ngModel)]="mesBuscarEnvio"> 
+                            <mat-option value="0">Mes</mat-option>
+                            <mat-option *ngFor="let mes of mesesList" value="{{mes.numero}}">{{mes.mes}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                </div>
+                <div class="col col-lg-3">
+                  <button mat-button class="btn btn-primary btn-sm" 
+                  style="margin-right: 10px;" (click)="verEnviosAlMes()">
+                  <mat-icon>remove_red_eye</mat-icon>
+                  Mostrar envios</button>
+                </div>
+              </div>
+              <br>
+              <div *ngIf="sin_datos_envio" class="alert alert-danger alert-dismissible fade show" role="alert" style="text-align: center;">
+                No hay datos para mostrar
+              </div>
+              <mat-grid-list cols="2" rowHeight="1:0.2">
+                  <mat-grid-tile>
+                    Puede realizar una busqueda:
+                  </mat-grid-tile>
+                  <mat-grid-tile>
+                      <mat-form-field class="col-lg-6 col-md-6 col-sm-6">
+                          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+                      </mat-form-field>
+                  </mat-grid-tile>
+              </mat-grid-list>
+          </mat-expansion-panel>
+      </mat-accordion>
+  </mat-card-content>
+</div>
+
+<div class="card card-body" style="margin-bottom: 10px;">
+  <div class="d-flex justify-content-center">
+      <h5 class="">Consultar errores en consumos</h5>
+  </div>
+  <mat-card-content>
+      <mat-accordion>
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                  Expandir para consultar errores en consumos
+              </mat-expansion-panel-header>
+              <div class="row">
+                <div class="col col-lg-3">
+                  <button mat-button class="btn btn-primary btn-sm" 
+                  style="margin-right: 10px;" (click)="verErroresEnConsumos()">
+                  <mat-icon>remove_red_eye</mat-icon>
+                  Mostrar errores</button>
+                </div>
+              </div>
+              <br>
+              <div *ngIf="sin_datos_error_consumo" class="alert alert-danger alert-dismissible fade show" role="alert" style="text-align: center;">
+                No hay datos para mostrar
+              </div>
+              <mat-grid-list cols="2" rowHeight="1:0.2">
+                  <mat-grid-tile>
+                    Puede realizar una busqueda:
+                  </mat-grid-tile>
+                  <mat-grid-tile>
+                      <mat-form-field class="col-lg-6 col-md-6 col-sm-6">
+                          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+                      </mat-form-field>
+                  </mat-grid-tile>
+              </mat-grid-list>
+          </mat-expansion-panel>
+      </mat-accordion>
+  </mat-card-content>
+</div>
+
+<div class="card card-body" style="margin-bottom: 10px;">
+  <div class="d-flex justify-content-center">
+      <h5 class="">Consultar errores en lecturas</h5>
+  </div>
+  <mat-card-content>
+      <mat-accordion>
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                  Expandir para consultar errores en lecturas
+              </mat-expansion-panel-header>
+              <div class="row">
+                <div class="col col-3">
+                    <div class="input-formulario form-group">
+                        <mat-form-field>
+                            <mat-select matNativeControl placeholder="Agencia" 
+                            name="actividad" id="actividad" 
+                            (selectionChange)="getSectores($event)" [(ngModel)]="agenciaElegida"> 
+                                <mat-option value="empty">Agencia</mat-option>
+                                <mat-option value="01">Latacunga</mat-option>
+                                <mat-option value="02">Salcedo</mat-option>
+                                <mat-option value="03">Pujilí</mat-option>
+                                <mat-option value="04">Saquisilí</mat-option>
+                                <mat-option value="05">Sigchos</mat-option>
+                                <mat-option value="06">La Mana</mat-option>
+                                <mat-option value="07">Pangua</mat-option>
+                                <mat-option value="95">CENEL</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="col col-3" >
+                  <div class="input-formulario form-group">
+                      <mat-form-field>
+                          <mat-select matNativeControl placeholder="Sector" 
+                          name="sector" id="sector" [(ngModel)]="sectorElegido"> 
+                            <mat-option value="empty"></mat-option>
+                            <mat-option *ngFor="let value of segundoFiltro" value="{{value.sector}}" >
+                              {{value.sector}}</mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                  </div>
+                </div>
+                <div class="col col-3" >
+                  <div class="input-formulario form-group">
+                      <mat-form-field>
+                          <mat-select matNativeControl placeholder="Tipo de error" 
+                          name="error" id="error" [(ngModel)]="errorElegido">
+                            <mat-option value="empty">Tipo de error</mat-option> 
+                            <mat-option value="11">Lectura menor</mat-option>
+                            <mat-option value="12">Lectura cero</mat-option>
+                            <mat-option value="21">Consumo alto</mat-option>
+                            <mat-option value="22">Consumo bajo</mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                  </div>
+                </div>
+                <div class="col col-3" >
+                  <div class="input-formulario form-group">
+                      <mat-form-field>
+                          <mat-select matNativeControl placeholder="Revisión" 
+                          name="error" id="error" [(ngModel)]="revisionElegida">
+                            <mat-option value="empty">Revisión</mat-option> 
+                            <mat-option value="0">Faltante</mat-option>
+                            <mat-option value="1">Realizada</mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col col-lg-3">
+                  <button mat-button class="btn btn-primary btn-sm" 
+                  style="margin-right: 10px;" (click)="verErroresEnLecturas()">
+                  <mat-icon>remove_red_eye</mat-icon>
+                  Mostrar errores</button>
+                </div>
+              </div>
+              <br>
+              <div *ngIf="sin_datos_error_lectura" class="alert alert-danger alert-dismissible fade show" role="alert" style="text-align: center;">
+                No hay datos para mostrar
+              </div>
+              <mat-grid-list cols="2" rowHeight="1:0.2">
+                  <mat-grid-tile>
+                    Puede realizar una busqueda:
+                  </mat-grid-tile>
+                  <mat-grid-tile>
+                      <mat-form-field class="col-lg-6 col-md-6 col-sm-6">
+                          <input matInput (keyup)="applyFilterErrorLec($event.target.value)" placeholder="Buscar">
+                      </mat-form-field>
+                  </mat-grid-tile>
+              </mat-grid-list>
+              <div class="table-responsive">
+                  <table mat-table [dataSource]="dataSourceErrorLec" class="table table-sm table-striped ">
+                      <!-- Id Column -->
+                      <ng-container matColumnDef="index">
+                        <th mat-header-cell *matHeaderCellDef> N° </th>
+                        <td mat-cell *matCellDef="let i=index"> {{i+1}} </td>
+                      </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="agencia">
+                        <th mat-header-cell *matHeaderCellDef> Agencia </th>
+                        <td mat-cell *matCellDef="let tarea"> 
+                            {{tarea.agencia}} 
+                        </td>
+                      </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="sector">
+                          <th mat-header-cell *matHeaderCellDef> Sector </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.sector}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="ruta">
+                          <th mat-header-cell *matHeaderCellDef> Ruta </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.ruta}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="cuenta">
+                          <th mat-header-cell *matHeaderCellDef> Cuenta </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.cuenta}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="medidor">
+                          <th mat-header-cell *matHeaderCellDef> Medidor </th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.medidor}} 
+                          </td>
+                        </ng-container>
+                        <!-- Nombres Column -->
+                      <ng-container matColumnDef="referencia_alerta">
+                          <th mat-header-cell *matHeaderCellDef> ERROR </th>
+                          <td mat-cell *matCellDef="let tarea" style="color: red;"> 
+                              {{tarea.referencia_alerta}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="lec_anterior">
+                          <th mat-header-cell *matHeaderCellDef> Lectura anterior</th>
+                          <td mat-cell *matCellDef="let tarea"> 
+                              {{tarea.lectura}} 
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="lec_actual">
+                          <th mat-header-cell *matHeaderCellDef> Lectura actual </th>
+                          <td mat-cell *matCellDef="let tarea" style="color: red;">
+                            {{tarea.nueva_lectura}}
+                          </td>
+                        </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="consumo_anterior">
+                        <th mat-header-cell *matHeaderCellDef> Consumo anterior </th>
+                        <td mat-cell *matCellDef="let tarea">
+                          {{tarea.consumo_anterior}}
+                        </td>
+                      </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="consumo_nuevo">
+                        <th mat-header-cell *matHeaderCellDef> Consumo nuevo </th>
+                        <td mat-cell *matCellDef="let tarea">
+                          {{tarea.nuevo_consumo}}
+                        </td>
+                      </ng-container>
+                      <!-- Nombres Column -->
+                      <ng-container matColumnDef="observacion">
+                          <th mat-header-cell *matHeaderCellDef> Observación </th>
+                          <td mat-cell *matCellDef="let tarea">
+                            <div style="width: 150px;">
+                                {{tarea.observacion}}
+                            </div>
+                          </td>
+                        </ng-container>
+
+                      <tr mat-header-row *matHeaderRowDef="displayedColumnsErrorLec"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumnsErrorLec;"></tr>
+                  </table>
+                  <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+              </div>
+          </mat-expansion-panel>
+      </mat-accordion>
+  </mat-card-content>
+</div>

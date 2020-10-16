@@ -1,0 +1,300 @@
+<ng-template #template>
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLongTitle">Detalles de la asignación</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!--tabla detalle actividades-->
+      <div class="table-responsive" style="font-size: 10pt;">
+            <table class="table table-bordered table-striped table-sm" 
+                 style="font-family: calibri; font-size: 10pt;" 
+                 *ngIf="view_table">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Fecha de asignación</th>
+                        <th>Actividad</th>
+                        <th>Medidor</th>
+                        <!--<th>Usuario</th>
+                        <th>Referencia</th>-->
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let actividades of actividades_tecncio | async | paginate: { itemsPerPage: 10, currentPage: p }; let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{actividades.fecha}}</td>
+                       <td>{{actividades.n9cono}}</td>
+                       <td>{{actividades.n9meco}}</td>
+                        <!--<td style="width: 200px;">
+                            {{actividades.n9nomb}}
+                        </td>
+                        <td style="width: 200px;">
+                            {{actividades.n9refe}}
+                        </td>-->
+                        <td *ngIf="actividades.estado==0"><span class="text-danger">Pendiente</span> </td>
+                        <td *ngIf="actividades.estado==1"><span class="text-success">Realizado</span> </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="form-group">
+                <pagination-controls (pageChange)="p = $event" class="text-danger"></pagination-controls>    
+            </div>
+      </div>
+      <!--fin tabla detalles-->
+  
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="modalRef.hide()">Cerrar</button>
+    </div>
+  <!--fin formulario-->
+</ng-template>
+
+<br>
+<div class="card card-body" style="margin-bottom: 10px;">
+    <div class="d-flex justify-content-center">
+        <h5 class="">Asignación de actividades</h5>
+    </div>
+    <mat-card-content>
+        <mat-accordion>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    Expandir para asignar
+                </mat-expansion-panel-header>
+                <div class="row">
+                    <div class="col col-3">
+                    <form [formGroup]="countryForm">
+                        <div class="input-formulario">
+                            <mat-form-field>
+                                <mat-select matNativeControl placeholder="Actitividad" 
+                                name="actividad" id="actividad" formControlName="actividad" [(value)]="actividad" 
+                                (selectionChange)="getTypeActivities(actividad)"> 
+                                    <mat-option value="empty"></mat-option>
+                                    <mat-option value="10">Notificación</mat-option>
+                                    <mat-option value="30">Cortes</mat-option>
+                                    <mat-option value="40">Reconexión</mat-option>
+                                    <mat-option value="50">Retiro</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </form>
+                    </div>
+                    <div class="col col-3">
+                        <form [formGroup]="formCanton">
+                            <div class="input-formulario form-group" *ngIf="cantones_exists">
+                                <mat-form-field>
+                                    <mat-select matNativeControl placeholder="Cantón" 
+                                    name="canton" id="canton" formControlName="canton" [(value)]="canton" 
+                                    (selectionChange)="getSectors(canton)">
+                                        <mat-option value="empty"></mat-option>
+                                        <mat-option *ngFor="let canton of cantones | async" 
+                                        value="{{canton.canton}}" >{{canton.canton}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <label>Cantones #{{num_cantones}} </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col col-3">
+                        <div class="input-formulario form-group" *ngIf="sectores_exists">
+                            <mat-form-field>
+                                <mat-label>Sectores</mat-label>
+                                <mat-select [formControl]="formSectores" multiple>
+                                    <mat-option *ngFor="let sector of myOptions" [value]="sector.name" 
+                                    (click)="onChange()">{{sector.name}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <label>Sectores #{{num_sectores}} </label> 
+                        </div>
+                    </div>
+                    <div class="col col-3">
+                        <div class="input-formulario form-group" *ngIf="cantidad_exists">
+                            <mat-form-field>
+                                <input matInput type="number" placeholder="Cantidad" 
+                                name="cantidad_actividades" value="{{num_actividades}}" autocomplete="off">    
+                            </mat-form-field> 
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="text-center col col-lg-12">
+                        <div class="alert alert-info">
+                                Actividades restantes: {{Ordenes}}
+                        </div>
+                    </div>
+                    <div class="text-center col col-lg-12">
+                        <button class="btn btn-success btn-sm" 
+                        (click)="buildTask()"
+                        mat-raised-button
+                        matTooltip="Precione para asignar actividades" >
+                        <mat-icon>check</mat-icon>    
+                        Asignar actividades
+                        </button>  
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        <!--
+        <div class="row">    
+            <div class="text-center col col-lg-12">
+                <button class="btn btn-success" (click)="buildTask()" >Asignar actividades </button>  
+            </div>
+        </div>
+        -->
+    </mat-card-content>
+</div>
+<div class="card card-body" style="margin-bottom: 10px;">
+    <div class="row">
+        <div class="col d-flex justify-content-center">
+            <h5 class="">Técnicos disponibles</h5>    
+        </div>
+    </div>
+    <mat-card-content>
+        <mat-accordion>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                Los técnicos disponibles son: {{ tecnicos.length }}
+                Oprima para mostralos
+                </mat-expansion-panel-header>
+                <!--<div class="col-lg-6 col-md-6" *ngFor="let tecnico of tecnicos">
+                        <div class="form-inline">
+                            <label for="cbox2" style="margin-right: 5px;"> {{ tecnico.nombres}} {{ tecnico.apellidos}}</label>  
+                            <input class="tec" value="" type="checkbox" id="{{tecnico.id_tecn}}" #inputRef >
+                        </div>
+                    </div>
+                -->
+                <div class="table-responsive">
+                    <cdk-virtual-scroll-viewport itemSize="100" class="example-viewport">       
+                        <mat-selection-list class="col-lg-12 col-md-12 col-sm-12" #tecnico 
+                        (selectionChange)="onSelection($event, tecnico.selectedOptions.selected)">
+                            <div style="width: 600px;">
+                                <mat-list-option *ngFor="let tecnico of tecnicos" [value]="tecnico.id_tecn">
+                                        {{ tecnico.apellidos}} {{ tecnico.nombres}}
+                                </mat-list-option>
+                            </div>
+                        </mat-selection-list>
+                    </cdk-virtual-scroll-viewport>      
+                </div>
+                <!--
+                    <p>Selected:</p>
+                    <ul>
+                    <li *ngFor="let i of tecnico.selectedOptions.selected">
+                        {{ i.value }}
+                    </li>
+                    </ul>
+                    <p>
+                    Options selected: {{tecnico.selectedOptions.selected.length}}
+                    </p>
+                -->
+            
+            </mat-expansion-panel>
+        </mat-accordion>
+    </mat-card-content>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-center">
+            <h5 class="">Detalle de asignaciones</h5> 
+        </div>
+        <mat-grid-list cols="2" rowHeight="1:0.2">
+            <mat-grid-tile>
+                Información de los técnicos y sus rutas:
+                <button style="margin-left: 20px;" class="btn btn-primary btn-sm" (click)="actualizarVista()">
+                    Actualizar</button>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field class="col-lg-6 col-md-6 col-sm-6">
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+        <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" multiTemplateDataRows
+             class="table table-sm table-striped">
+                
+                <!-- Id Column -->
+                <ng-container matColumnDef="index">
+                    <th mat-header-cell *matHeaderCellDef> N° </th>
+                    <td mat-cell *matCellDef="let distribucion" class="datos-td"> {{distribucion.index}} </td>
+                </ng-container>
+                <!-- Nombres Column -->
+                <ng-container matColumnDef="tecnico">
+                    <th mat-header-cell *matHeaderCellDef> Técnico </th>
+                    <td mat-cell *matCellDef="let distribucion" class="datos-td"> 
+                        <div style="width: 200px;">
+                            {{distribucion.tecnico}} 
+                        </div>
+                    </td>
+                </ng-container>
+                <!--datos expandir-->
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let distribucion" [attr.colspan]="displayedColumns.length">
+                        <div class="example-element-detail"
+                            [@detailExpand]="distribucion == expandedElement ? 'expanded' : 'collapsed'">
+                            <div class="example-element-description justify-content-center">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-striped table-bordered">
+                                        <tr>
+                                            <td>Código de Actividad</td>
+                                            <td>Agencia</td>
+                                            <td>Sector</td>
+                                            <td>Cantidad</td>
+                                            <td>Tipo</td>
+                                            <td>Acciones</td>
+                                        </tr>
+                                        <tr *ngFor="let item of distribucion.data">
+                                            <td>{{item.datos.n9cono}}</td>
+                                            <td>{{item.datos.n9coag}}</td>
+                                            <td>{{item.datos.n9cose}}</td>
+                                            <td>{{item.datos.cantidad}}</td>
+                                            <td>{{item.datos.tipo}}</td>
+                                            <td>
+                                                <div style="width: 350px;">
+                                                    <!--<button mat-button type="button" style="margin-right: 5px;" 
+                                                    (click)="openModalDetalle(item.datos.id_tecn, item.datos.tipo,item.datos.n9cose, template)" 
+                                                    class="btn btn-info btn-sm">
+                                                    <mat-icon>list</mat-icon>    
+                                                    Detalle   
+                                                    </button>
+                                                    -->
+                                                    <button mat-button class="btn btn-warning btn-sm" (click)="AsignarActividades(item.datos.id_tecn)" 
+                                                    style="margin-right: 5px;">
+                                                    <mat-icon>replay</mat-icon>    
+                                                    Asignar
+                                                    </button>
+                                                    <button mat-button class="btn btn-danger btn-sm" 
+                                                    (click)="confirmarEliminar(item.datos.id_tecn, item.datos.n9cose, item.datos.cantidad, 
+                                                    item.datos.n9cono)">
+                                                    <mat-icon>delete</mat-icon>
+                                                            Eliminar
+                                                    </button>  
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let distribucion; columns: displayedColumns;"
+                class="example-element-row"
+                [class.example-expanded-row]="expandedElement === distribucion"
+                (click)="expandedElement = expandedElement === distribucion ? null : distribucion">
+                </tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>
+
+
+    
+    
+   

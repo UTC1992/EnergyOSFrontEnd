@@ -1,0 +1,228 @@
+<br>
+<div class="card card-body" style="margin-bottom: 10px;">
+  <div class="d-flex justify-content-center">
+    <h5 class="">Subir Archivo</h5>
+  </div>
+  <mat-card-content>
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            Expandir para subir los datos
+        </mat-expansion-panel-header>
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+              <form [formGroup]="formload" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                  <input type="file" class="btn btn-outline-primary btn-sm"  id="archivo"  
+                  name="archivo" (change)="onFileChange($event)" #fileInput >
+                </div>
+                <div class="selectMes">
+                  <mat-form-field>
+                      <mat-select matNativeControl placeholder="Mes" 
+                      name="mes" id="mes" formControlName="mes"> 
+                        <mat-option value=""></mat-option>
+                        <mat-option *ngFor="let value of meses" value="{{value.numero}}" >
+                          {{value.nombre}}</mat-option>
+                      </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="form-group">
+                  <button mat-button type="submit"  class="btn btn-success btn-sm">
+                    Subir Archivo
+                    <mat-icon>backup</mat-icon>
+                  </button>
+                </div>
+              </form>
+          </div>
+
+          <div class="col d-flex justify-content-center">
+            <div class="col col-lg-6 col-md-6 col-sm-6  ">
+              <div>	
+                <label>Puede borrar la ruta que acaba de subir:</label>
+                <button mat-button type="button" 
+                (click)="confirmarEliminarRuta()" class="btn btn-danger btn-sm">
+                <mat-icon>delete</mat-icon>
+                Borrar datos</button>
+              </div>
+            
+            </div>
+          </div>
+        </div>
+        <div class="row">
+            <div class="card-body card">
+              <div class="row d-flex justify-content-center">
+                <div class="alert alert-info">
+                  <strong> Nota: </strong>Para poder realizar las asignaciones y actualizar los datos del mes anterior con la nueva data precione el siguiente botón por favor.
+                </div>
+              </div>
+              <div class="row d-flex justify-content-center">
+                <button mat-button type="button" 
+                (click)="enviarDatosATemporal()" class="btn btn-warning btn-sm">
+                <mat-icon>cached</mat-icon>
+                Procesar datos subidos</button>
+              </div>
+            </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-content>
+</div>
+
+<div class="card card-body" style="margin-bottom: 10px;">
+  <div class="d-flex justify-content-center">
+    <h5 class="">Validaciones</h5>
+  </div>
+  <mat-card-content>
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            Expandir para validar datos
+        </mat-expansion-panel-header>
+        <div class="table-responsive">
+          <mat-grid-list cols="3" rowHeight="1:0.2" class="col-lg-12 col-md-12 col-sm-12">
+              <mat-grid-tile>
+                <div style="width: 200px;" class="col-lg-6">
+                    <button mat-button type="button" 
+                    (click)="procesarCatastros()" class="btn btn-success btn-sm">
+                    <mat-icon>cached</mat-icon>
+                    Procesar catastros</button>
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile>
+                  <div style="width: 200px;" class="col-lg-6">
+                    Puede realizar una busqueda:
+                  </div>
+              </mat-grid-tile>
+              <mat-grid-tile>
+                  <mat-form-field class="col-lg-6 col-md-6 col-sm-6">
+                      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+                  </mat-form-field>
+              </mat-grid-tile>
+          </mat-grid-list>
+          <table mat-table [dataSource]="dataSource" class="table table-sm table-striped ">
+              <!-- Id Column -->
+              <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef> N° </th>
+                <td mat-cell *matCellDef="let i=index"> {{i+1}} </td>
+              </ng-container>
+              <!-- Nombres Column -->
+              <ng-container matColumnDef="agencia">
+                  <th mat-header-cell *matHeaderCellDef> Agencia </th>
+                  <td mat-cell *matCellDef="let agencia"> 
+                    {{agencia.agencia}}
+                  </td>
+                </ng-container>
+              <!-- Nombres Column -->
+              <ng-container matColumnDef="validar_lecturas">
+                <th mat-header-cell *matHeaderCellDef> Validar lecturas menores</th>
+                <td mat-cell *matCellDef="let agencia"> 
+                  <button mat-button type="button" 
+                  (click)="validarLecturasMenor(agencia.numero)" class="btn btn-warning btn-sm">
+                  <mat-icon>touch_app</mat-icon>
+                  Validar</button>
+                </td>
+              </ng-container>
+              <!-- Nombres Column -->
+              <ng-container matColumnDef="calcular_consumos">
+                  <th mat-header-cell *matHeaderCellDef> Calcular consumo </th>
+                  <td mat-cell *matCellDef="let agencia"> 
+                    <button mat-button type="button" 
+                    (click)="calcularConsumos(agencia.numero)" class="btn btn-primary btn-sm">
+                    <mat-icon>touch_app</mat-icon>
+                    Calcular</button>
+                  </td>
+                </ng-container>
+              <!-- Nombres Column -->
+              <ng-container matColumnDef="validar_consumos">
+                  <th mat-header-cell *matHeaderCellDef> Validar consumos </th>
+                  <td mat-cell *matCellDef="let agencia"> 
+                    <button mat-button type="button" 
+                    (click)="validarConsumos(agencia.numero)" class="btn btn-warning btn-sm">
+                    <mat-icon>touch_app</mat-icon>
+                    Validar</button>
+                  </td>
+                </ng-container>
+              <!-- Nombres Column -->
+              <ng-container matColumnDef="lecturas_cero">
+                  <th mat-header-cell *matHeaderCellDef> Validacion final de lecturas en cero </th>
+                  <td mat-cell *matCellDef="let agencia"> 
+                    <button mat-button type="button" 
+                    (click)="validarLecturasCero(agencia.numero)" class="btn btn-primary btn-sm">
+                    <mat-icon>touch_app</mat-icon>
+                    Validar</button>
+                  </td>
+                </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-content>
+</div>
+
+<div class="card card-body" style="margin-bottom: 10px;">
+  <div class="d-flex justify-content-center">
+    <h5 class="">Finalización del mes</h5>
+  </div>
+  <mat-card-content>
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            Expandir para procesar datos para el nuevo mes
+        </mat-expansion-panel-header>
+        <div class="row">
+          <div class="col col-lg-3">
+            <!--
+            <button mat-button type="button" 
+            (click)="enviarAlHistorial()" class="btn btn-warning btn-sm">
+            <mat-icon>cached</mat-icon>
+            Enviar al historial</button>-->
+            <button mat-button type="button" class="btn btn-warning btn-sm">
+            <mat-icon>cached</mat-icon>
+            Enviar al historial</button>
+          </div>
+          <div class="col col-lg-3">
+            <button mat-button type="button" 
+            (click)="generarTemporalNuevoMes()" class="btn btn-success btn-sm">
+            <mat-icon>cached</mat-icon>
+            Empezar nuevo mes</button>
+          </div>
+      </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-content>
+</div>
+
+<div class="card card-body" style="margin-bottom: 10px;">
+    <div class="d-flex justify-content-center">
+      <h5 class="">Subir respaldo</h5>
+    </div>
+    <mat-card-content>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+              Expandir para subir respaldos
+          </mat-expansion-panel-header>
+          <div class="row">
+              <div class="col d-flex justify-content-center">
+                <form [formGroup]="formloadRespaldo" (ngSubmit)="onSubmitRespaldo()">
+                  <div class="form-group">
+                    <input type="file" class="btn btn-primary btn-sm"  id="respaldo"  
+                    name="respaldo" (change)="onFileChangeRespaldo($event)" #fileInputRespaldo >
+                  </div>
+                  <div class="form-group">
+                    <button mat-button type="submit"  class="btn btn-success btn-sm">
+                      Recuperar información
+                      <mat-icon>backup</mat-icon>
+                    </button>
+                  </div>
+                </form>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card-content>
+  </div>

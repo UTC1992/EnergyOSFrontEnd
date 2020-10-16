@@ -1,0 +1,27 @@
+<mat-card>
+    <mat-tab-group mat-align-tabs="start">
+      <!--seccion para subida de archivo txt al servidor -->
+        <mat-tab label="Procesar ruta">
+            <app-loadfile></app-loadfile>
+        </mat-tab>
+        <!--tab de distribucion-->
+        <mat-tab label="Distribuir rutas">
+            <app-distribucion></app-distribucion>
+        </mat-tab>
+
+        <!--tab de consultas-->
+        <mat-tab label="Consultas">
+          <app-consultas></app-consultas>
+        </mat-tab>
+
+        <!--tab de consolidados-->
+        <mat-tab label="Reportes">
+            <app-reporte></app-reporte>
+        </mat-tab>
+
+        <!--tab de consolidados-->
+        <mat-tab label="Configuraciones">
+            <app-observaciones></app-observaciones>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

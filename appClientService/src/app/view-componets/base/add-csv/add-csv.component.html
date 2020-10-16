@@ -1,0 +1,109 @@
+<br>
+<div class="card card-body" style="margin-bottom: 10px;">
+	<div class="d-flex justify-content-center">
+		<h5 class="">Subir actividades</h5>
+	</div>
+	<mat-card-content>
+		<!--
+				<div class="accordion" id="accordionExample">
+					<div class="card">
+							<div class="card-header" id="headingOne">
+									<a style="text-align: center;" class="nav-link" data-toggle="collapse" data-target="#collapseOne" href="#" aria-expanded="true" aria-controls="collapseOne">
+										Necesitas ayuda? Presiona AQUÍ
+									</a>
+							</div>
+
+							<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+								<div class="card-body">
+									<p>Para subir la ruta del día, realice los siguientes pasos:</p>
+							<p>1.- Presione el botón <strong>"Seleccionar archivo" </strong></p>
+							<p>2.- Presione el botón <strong>"Subir Archivo"</strong></p>
+							<p>3.- Recibirá un mensaje que confirme la subida del archivo</p>
+							<p>4.- Finalmente presione el botón <strong>"Procesar Reconexiones Manuales"</strong> para poder <strong>Distribuirlas</strong></p>
+								</div>
+							</div>
+						</div>
+				</div>
+			-->
+		<mat-accordion>
+			<mat-expansion-panel>
+				<mat-expansion-panel-header>
+						Expandir para subir los datos
+				</mat-expansion-panel-header>
+				<div class="row">
+						<div class="col d-flex justify-content-center">
+							<form [formGroup]="form" (ngSubmit)="onSubmit()">
+							<div class="form-group">
+								<input type="file" id="archivo" class="btn btn-outline-primary btn-sm" 
+								name="archivo" (change)="onFileChange($event)" #fileInput >
+							</div>
+							<!--
+							<div role="progressbar"  [style.width.%]="uploadResponse.message" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+								<label>Cargando archivo... {{uploadResponse.message}}%</label>
+								<mat-chip-list>
+									<mat-chip *ngIf="progresoMostrar" color="warn" selected>Subida Completada</mat-chip>
+								</mat-chip-list>
+								<mat-progress-bar style="margin-top: 10px;"
+									class="example-margin"
+									mode="determinate" [value]="uploadResponse.message">
+								</mat-progress-bar>
+								<br>
+							</div>
+							-->
+							<div class="form-group">
+								<button type="submit" mat-button 
+								[disabled]="form.invalid || loading" class="btn btn-success btn-sm">
+								<mat-icon>backup</mat-icon>
+								Subir Archivo</button>
+							</div>
+						</form>
+					</div>
+		
+					<div class="col d-flex justify-content-center">
+						<div class="col col-lg-6 col-md-6 col-sm-6  ">
+							
+							<div class="input-formulario">
+								<mat-form-field>
+									<input matInput #pickerInput [matDatepicker]="fecha" 
+									placeholder="Fecha de subida" [formControl]="dateBorrado" 
+									(dateChange)="getFechaBorrar(pickerInput.value)">
+									<mat-datepicker-toggle matSuffix [for]="fecha"></mat-datepicker-toggle>
+									<mat-datepicker #fecha></mat-datepicker>
+								</mat-form-field>
+							</div>
+							<div class="form-group">	
+								<button mat-button type="button" 
+								 (click)="confirmarEliminar()" class="btn btn-danger btn-sm">
+								 <mat-icon>delete</mat-icon>
+								 Borrar ruta</button>
+							</div>
+						</div>
+						<!--
+						<mat-form-field>
+								<input matInput [matDatepicker]="picker" placeholder="Choose a date">
+								<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+								<mat-datepicker #picker></mat-datepicker>
+							</mat-form-field>
+						-->
+					</div>
+				</div>
+				<div class="card-body card">
+					<div class="row d-flex justify-content-center">
+						<div class="alert alert-info">
+							<strong> Nota: </strong>Si realizó reconexiones manuales debe procesarlas para poder realizar la distribución.
+						</div>
+					</div>
+					<div class="row d-flex justify-content-center">
+						<button type="button" mat-button  
+						(click)="validarRecManuales()" class="btn btn-warning btn-sm">
+						<mat-icon>cached</mat-icon>
+						Procesar rec</button>
+					</div>
+				</div>
+			</mat-expansion-panel>
+		</mat-accordion>	
+	</mat-card-content>
+</div>
+<app-table-client>
+</app-table-client>
+

@@ -1,0 +1,47 @@
+
+<mat-card>
+  <div class="card">
+    <div class="card-body">
+        <br>
+        <div class="d-flex justify-content-center">
+            <h5 class="">Editar información de usuario</h5>
+        </div>
+        <div class="input-formulario">
+            <mat-form-field>
+              <input type="text" placeholder="Empresa" matInput [(ngModel)]="empresa" autocomplete="off" readonly>
+            </mat-form-field>
+            <mat-form-field>
+                <input type="text" placeholder="Usuario" matInput [(ngModel)]="nombre_usuario" autocomplete="off" readonly>
+              </mat-form-field>
+        </div>
+        <form [formGroup]="form_email_edicion" (ngSubmit)="confirmarEditarEmail()">
+          <div class="input-formulario">
+            <mat-form-field>
+              <input type="email" placeholder="Email" formControlName="email" matInput autocomplete="off" >
+              <mat-error *ngIf="form_email_edicion.get('email').hasError('required')">Requerido</mat-error>
+            </mat-form-field>
+          </div>
+          <button mat-button type="submit" class="btn btn-info btn-sm">
+          <mat-icon>edit</mat-icon>
+            Editar
+          </button>
+        </form>
+        <form [formGroup]="form_password_edicion" (ngSubmit)="confirmarEditarPass()">
+          <div class="input-formulario">
+            <mat-form-field>
+              <input type="password" placeholder="Contraseña" formControlName="password" matInput autocomplete="off" >
+              <mat-error *ngIf="form_password_edicion.get('password').hasError('required')">Requerido</mat-error>
+            </mat-form-field>
+          </div>
+          <button mat-button type="submit" class="btn btn-info btn-sm">
+          <mat-icon>edit</mat-icon>
+            Editar
+          </button>  
+        </form>
+        
+    </div>
+  </div>
+    
+</mat-card>
+
+  

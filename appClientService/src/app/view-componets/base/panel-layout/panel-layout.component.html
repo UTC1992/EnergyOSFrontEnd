@@ -1,0 +1,198 @@
+<mat-card>
+    <mat-tab-group mat-align-tabs="start">
+        <mat-tab label="Subir Archivo">
+            <app-add-csv>
+            </app-add-csv>
+        </mat-tab>
+        <mat-tab label="Distribuir actividades">
+            <app-actividades-tecnico>
+            </app-actividades-tecnico>
+        </mat-tab>
+        <mat-tab label="Consultas">
+            <br>
+            <div class="card" style="margin-bottom: 10px;">
+              <div class="card-body" >
+                <div class="d-flex justify-content-center">
+                    <h5 class="">Consultas sobre actividades</h5>
+                </div>
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      Expandir para consultar actividades
+                    </mat-expansion-panel-header>
+                    <div class="row">
+                      <div class="col col-lg-3">
+                          <div class="input-formulario">
+                            <mat-form-field>
+                              <input matInput #pickerInput1 [matDatepicker]="picker" 
+                              placeholder="Elija la fecha" [formControl]="date" 
+                              (dateChange)="getFecha(pickerInput1.value)">
+                              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                              <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                          </div>
+                      </div>
+                      <div class="col col-lg-3">
+                          <div class="input-formulario">
+                              <mat-form-field>
+                                  <mat-select matNativeControl placeholder="Técnico" 
+                                  name="tecnico" id="tecnico"  [(ngModel)]="tecnicoBuscar"> 
+                                      <mat-option value="empty">Técnico</mat-option>
+                                      <mat-option *ngFor="let tecnico of tecnicos | async" value="{{tecnico.id_tecn}}">{{tecnico.apellidos}} {{tecnico.nombres}}</mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+                          </div>
+                      </div>
+                      <div class="col col-lg-3">
+                          <div class="input-formulario">
+                              <mat-form-field>
+                                  <mat-select matNativeControl placeholder="Actitividad" 
+                                  name="actividad" id="actividad" [(ngModel)]="actividadBuscar"> 
+                                      <mat-option value="empty">Actividad</mat-option>
+                                      <mat-option value="10">Notificación</mat-option>
+                                      <mat-option value="30">Cortes</mat-option>
+                                      <mat-option value="40">Reconexión</mat-option>
+                                      <mat-option value="50">Retiro</mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+                          </div>
+                      </div>
+                      <div class="col col-lg-3">
+                          <div class="input-formulario">
+                              <mat-form-field>
+                                  <mat-select matNativeControl placeholder="Estado" 
+                                  name="estado" id="estado" [(ngModel)]="estadoBuscar"> 
+                                      <mat-option value="empty">Estado</mat-option>
+                                      <mat-option value="1" >Asignado</mat-option>
+                                      <mat-option value="0" >Sin Asignar</mat-option>
+                                      <mat-option value="2" >Terminadas</mat-option>
+                                      <mat-option value="3" >No Terminadas</mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <button mat-button class="btn btn-primary btn-sm" 
+                      style="margin-right: 10px;" (click)="verActividadesDiarias()">
+                      <mat-icon>remove_red_eye</mat-icon>
+                      Ver Actividades</button>
+                      <button mat-button class="btn btn-warning btn-sm" 
+                      style="margin-right: 10px;" (click)="verRecManual()">
+                      <mat-icon>remove_red_eye</mat-icon>
+                      Ver Rec-Manuales</button>
+                      <button mat-button class="btn btn-sm btn-success" 
+                      (click)="exportarExcelActividades()" style="margin-right: 10px;" >
+                      <mat-icon>cloud_download</mat-icon>
+                      Exportar a Excel</button>
+                    </div>
+                    <br>
+                    <div class="d-flex justify-content-center">
+                        <h6 class="">Actividades</h6>
+                    </div>
+                    <!--datos de actividades-->
+                    <app-table-actividades></app-table-actividades>
+                    <br>
+                    <div class="d-flex justify-content-center">
+                      <h6 class="">Reconexiones</h6>
+                    </div>
+                    <!--datos de reconexiones manuales-->
+                    <app-table-recmanual></app-table-recmanual>
+                    
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-center">
+                    <h5 class="">Consultas sobre envios</h5>
+                </div>
+                <nat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      Expandir para consultar envios
+                    </mat-expansion-panel-header>
+                    <div class="row">
+                        <div class="col col-3">
+                            <div class="input-formulario">
+                              <mat-form-field>
+                                <input matInput #pickerInputEnvio [matDatepicker]="fechaEnvio" 
+                                placeholder="Elija la fecha" [formControl]="dateEnvios" 
+                                (dateChange)="getFechaEnvios(pickerInputEnvio.value)">
+                                <mat-datepicker-toggle matSuffix [for]="fechaEnvio"></mat-datepicker-toggle>
+                                <mat-datepicker #fechaEnvio></mat-datepicker>
+                              </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="col col-3">
+                          <button mat-button class="btn btn-primary btn-sm"  
+                          (click)="mostrarEnvios();">
+                          <mat-icon>remove_red_eye</mat-icon>
+                          Mostrar envios
+                        </button> 
+                        </div>
+                    </div>
+                    <app-table-envios></app-table-envios>
+                  </mat-expansion-panel>
+                </nat-accordion>
+              </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="Consolidado">
+            <br>
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-center">
+                    <h5 class="">Generar consolidado</h5>
+                </div>
+                <div class="row">
+                  <div class="col col-3">
+                      <div class="input-formulario">
+                        <mat-form-field>
+                          <input matInput #pickerInput [matDatepicker]="fecha" 
+                          placeholder="Elija la fecha" [formControl]="dateConsolidado" 
+                          (dateChange)="getFechaConsolidar(pickerInput.value)">
+                          <mat-datepicker-toggle matSuffix [for]="fecha"></mat-datepicker-toggle>
+                          <mat-datepicker #fecha></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col d-flex justify-content-center form-group">
+                    <button mat-button class="btn btn-success"  
+                    (click)="consolodarActividades();">
+                    <mat-icon>cached</mat-icon>
+                    Consolidar </button>  
+                  </div>
+                </div>
+                <div class="row">
+                    
+                  <!--<div class="col d-flex justify-content-center form-group">
+                    <button *ngIf="exportable" class="btn btn-warning" (click)="exportarConsolidado();">Descargar consolidado </button>  
+                  </div>-->
+                  <div class="col d-flex justify-content-center form-group">
+                      <a mat-button *ngIf="exportable"  class="btn btn-warning"  
+                      href="{{url_export}}/{{fecha_consolidado}}/{{id_emp}}" 
+                      download="consolidado">
+                      <mat-icon>cloud_download</mat-icon>
+                      Descargar
+                      </a> 
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="col loading d-flex justify-content-center" *ngIf="loading">
+                      <img src="assets/img/cargando.gif">
+                  </div>    
+                </div>
+              </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="Estadísticas Beta">
+          <app-estadisticas-cortes>
+          </app-estadisticas-cortes>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

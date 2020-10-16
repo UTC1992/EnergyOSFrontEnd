@@ -1,0 +1,139 @@
+<br>
+<div class="card card-body" style="margin-bottom: 10px;">
+  <div class="d-flex justify-content-center">
+      <h5 class="">Gestión de observaciones</h5>
+  </div>
+  <mat-card-content>
+      <mat-accordion>
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                  Expandir para gestionar
+              </mat-expansion-panel-header>
+              <mat-grid-list cols="2" rowHeight="1:0.2">
+                <mat-grid-tile>
+                  <button mat-button class="btn btn-primary btn-sm" (click)="openCreateObservaciones(template)">
+                    <mat-icon>assignment</mat-icon>
+                    Crear
+                  </button>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <mat-form-field class="col-lg-6 col-md-6 col-sm-6">
+                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+                    </mat-form-field>
+                </mat-grid-tile>
+              </mat-grid-list>
+              <div class="table-responsive">
+                <table mat-table [dataSource]="dataSource" class="table table-sm table-striped " >
+            
+                    <!-- Id Column -->
+                    <ng-container matColumnDef="index">
+                      <th mat-header-cell *matHeaderCellDef> N° </th>
+                      <td mat-cell *matCellDef="let i=index"> {{i+1}} </td>
+                    </ng-container>
+                    <!-- Nombres Column -->
+                    <ng-container matColumnDef="codigo">
+                      <th mat-header-cell *matHeaderCellDef>Código </th>
+                      <td mat-cell *matCellDef="let observacion">{{observacion.codigo}}</td>
+                    </ng-container>
+                    <!-- Apellidos Column -->
+                    <ng-container matColumnDef="descripcion">
+                      <th mat-header-cell *matHeaderCellDef> Descripción </th>
+                      <td mat-cell *matCellDef="let observacion">
+                          <div style="width: 200px;">
+                              {{observacion.descripcion}}
+                          </div> 
+                      </td>
+                    </ng-container>
+                    <!-- Telefono Column -->
+                    <ng-container matColumnDef="tipo">
+                      <th mat-header-cell *matHeaderCellDef> Tipo </th>
+                      <td mat-cell *matCellDef="let observacion"> {{observacion.tipo}} </td>
+                    </ng-container>
+                    <!-- Email Column -->
+                    <ng-container matColumnDef="permitirlec">
+                      <th mat-header-cell *matHeaderCellDef> Permitir lectura </th>
+                      <td mat-cell *matCellDef="let observacion">
+                          <span *ngIf="observacion.permite_lec==0" class="btn btn-danger btn-sm">NO</span>
+                          <span *ngIf="observacion.permite_lec==1" class="btn btn-success btn-sm">SI </span>  
+                      </td>
+                    </ng-container>
+          
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                        <td mat-cell *matCellDef="let observacion">
+                          <div style="width: 220px;">
+                            <button mat-button class="btn btn-info btn-sm" 
+                            (click)="openModalEdit(observacion.id_obs, template)"
+                            style="margin-right: 5px;">
+                            <mat-icon>edit</mat-icon>
+                              Editar
+                            </button>
+                            <button mat-button class="btn btn-danger btn-sm" 
+                            (click)="confirmarEliminar(observacion.id_obs)">
+                            <mat-icon>delete</mat-icon>
+                            Eliminar
+                            </button>
+                          </div>
+                        </td>
+                      </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+              </div>
+          </mat-expansion-panel>
+      </mat-accordion>
+  </mat-card-content>
+</div>
+
+
+<ng-template #template>
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLongTitle">{{ tituloModal }}</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <!--formulario de edición-->
+    <form [formGroup]="formData" (ngSubmit)="enviarDatos()">
+    <div class="modal-body">
+      <div class="form-horizontal">
+          <div class="input-formulario">
+              <mat-form-field>
+                  <input type="number" matInput placeholder="Código" formControlName="codigo" autocomplete="off">
+                  <mat-error *ngIf="formData.get('codigo').hasError('required')">Requerido</mat-error>
+              </mat-form-field>
+              <mat-form-field>
+                  <input type="text" matInput placeholder="Descripción" formControlName="descripcion" autocomplete="off">
+                  <mat-error *ngIf="formData.get('descripcion').hasError('required')">Requerido</mat-error>
+              </mat-form-field>
+              <mat-form-field>
+                  <input type="text" matInput placeholder="Tipo" formControlName="tipo" readonly autocomplete="off">
+                  <mat-error *ngIf="formData.get('tipo').hasError('required')">Requerido</mat-error>
+              </mat-form-field>
+        </div>
+        <div class="input-formulario">
+            Permiter ingreso de lectura<br>
+            <mat-radio-group formControlName="permite_lec">
+                <mat-radio-button [value]="1">Si</mat-radio-button>
+                <br>
+                <mat-radio-button [value]="0" >No</mat-radio-button>
+            </mat-radio-group>
+            <mat-error *ngIf="formData.get('permite_lec').hasError('required')">Requerido</mat-error>
+        </div>
+      </div>
+  
+    </div>
+    <div class="modal-footer">
+    <button mat-button type="button" class="btn btn-danger"
+     (click)="modalRef.hide()">
+     <mat-icon>cancel</mat-icon>
+     Cerrar</button>
+    <button mat-button type="submit" [disabled]="formData.invalid" class="btn btn-primary">
+      <mat-icon>save</mat-icon>
+      Guardar 
+    </button>
+    </div>
+  </form>
+  <!--fin formulario-->
+  </ng-template>

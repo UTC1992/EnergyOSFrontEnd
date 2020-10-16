@@ -1,0 +1,29 @@
+/* Structure */
+table {
+    width: 100%;
+  }
+  
+.mat-form-field {
+  width: 100%;
+}
+
+.mat-cell {
+  padding: 5px;
+  border: 1px solid #e0e0e0;
+}
+
+.mat-header-cell{
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  font-weight: bold;
+  font-size: 10pt;
+}
+
+.input-formulario {
+  display: flexbox;
+  flex-direction: column;
+}
+
+.input-formulario > * {
+  width: 100%;
+}
