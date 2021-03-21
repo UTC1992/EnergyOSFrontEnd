@@ -1,5 +1,5 @@
 export class Url {
-    url = "http://energy-back.herokuapp.com";
+    url = "https://energy-back.herokuapp.com";
     //url = "http://127.0.0.1:8000";
     public base = this.url+"/api/angular";
     public baseLogin = this.url+"/";
