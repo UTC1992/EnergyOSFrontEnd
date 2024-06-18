@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node server.js",
+    "start": "ng serve",
     "heroku-postbuild": "ng build --prod",
     "build": "ng build --prod",
     "test": "ng test",
@@ -34,7 +34,7 @@
     "core-js": "^2.5.4",
     "express": "^4.17.1",
     "file-saver": "^2.0.0-rc.3",
-    "firebase": "^7.4.0",
+    "firebase": "^7.24.0",
     "jquery": "^3.3.1",
     "moment": "^2.24.0",
     "ng2-charts": "^2.2.3",
